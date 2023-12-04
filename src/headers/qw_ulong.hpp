@@ -4,18 +4,22 @@
 #include <vector>
 #include <string>
 
+#define QW_BIGINT_DIGITTYPE unsigned long long
+#define QW_BIGINT_DIGITSIZE 64
+#define QW_BIGINT_DIGITMAX 0xFFFF'FFFF'FFFF'FFFF
+
 class qw_ulong{
     private:
-        std::vector<unsigned> digits;
+        std::vector<QW_BIGINT_DIGITTYPE> digits;
 
     public:
         //Constructors:
         qw_ulong();
-        qw_ulong(std::vector<unsigned> value);
-        qw_ulong(unsigned long value);
+        qw_ulong(QW_BIGINT_DIGITTYPE value);
+        qw_ulong(std::vector<QW_BIGINT_DIGITTYPE> value);
 
         //Asignment operators:
-        qw_ulong& operator=(const unsigned long value);
+        qw_ulong& operator=(const QW_BIGINT_DIGITTYPE value);
         qw_ulong& operator+=(const qw_ulong& value);
         qw_ulong& operator-=(const qw_ulong& value);
         qw_ulong& operator*=(const qw_ulong& value);
@@ -28,8 +32,10 @@ class qw_ulong{
         qw_ulong& operator^=(const qw_ulong& value);
 
         //Arithmetic operators:
-        void operator++();
-        void operator--();
+        qw_ulong& operator++();
+        qw_ulong& operator--();
+        const qw_ulong operator++(int);
+        const qw_ulong operator--(int);
         friend qw_ulong operator+(const qw_ulong& lhs, const qw_ulong& rhs);
         friend qw_ulong operator-(const qw_ulong& lhs, const qw_ulong& rhs);
         friend qw_ulong operator*(const qw_ulong& lhs, const qw_ulong& rhs);
@@ -58,11 +64,13 @@ class qw_ulong{
         explicit operator short();
         explicit operator int();
         explicit operator long();
+        explicit operator long long();
         explicit operator unsigned char();
         explicit operator unsigned short();
         explicit operator unsigned int();
         explicit operator unsigned long();
-        explicit operator std::vector<unsigned>();
+        explicit operator unsigned long long();
+        explicit operator std::vector<QW_BIGINT_DIGITTYPE>();
 
         //Other methods:
         size_t size() const;

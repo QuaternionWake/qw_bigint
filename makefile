@@ -11,13 +11,13 @@ libqw_bigint.a: tempfiles $(obj_files_static)
 	ar rcs $@ $(obj_files_static)
 
 tempfiles/qw_ulong_static.o: src/qw_ulong.cpp
-	g++ -c $? -o $@
+	g++ -mbmi2 -c $? -o $@
 
 libqw_bigint.so: tempfiles $(obj_files_shared)
 	gcc -shared $(obj_files_shared) -o $@
 
 tempfiles/qw_ulong_shared.o: src/qw_ulong.cpp
-	g++ -fPIC -c $? -o $@
+	g++ -mbmi2 -fPIC -c $? -o $@
 
 tempfiles:
 	mkdir tempfiles -p
