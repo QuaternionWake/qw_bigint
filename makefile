@@ -1,6 +1,6 @@
-obj_files_static := tempfiles/qw_ulong_static.o
-obj_files_shared := tempfiles/qw_ulong_shared.o
-src_files := src/qw_ulong.cpp
+obj_files_static := tempfiles/qw_ulong_static.o tempfiles/qw_long_static.o
+obj_files_shared := tempfiles/qw_ulong_shared.o tempfiles/qw_long_shared.o
+src_files := src/qw_ulong.cpp src/qw_long.cpp
 
 default: static shared
 
@@ -13,10 +13,16 @@ libqw_bigint.a: tempfiles $(obj_files_static)
 tempfiles/qw_ulong_static.o: src/qw_ulong.cpp
 	g++ -mbmi2 -c $? -o $@
 
+tempfiles/qw_long_static.o: src/qw_long.cpp
+	g++ -mbmi2 -c $? -o $@
+
 libqw_bigint.so: tempfiles $(obj_files_shared)
 	gcc -shared $(obj_files_shared) -o $@
 
 tempfiles/qw_ulong_shared.o: src/qw_ulong.cpp
+	g++ -mbmi2 -fPIC -c $? -o $@
+
+tempfiles/qw_long_shared.o: src/qw_long.cpp
 	g++ -mbmi2 -fPIC -c $? -o $@
 
 tempfiles:

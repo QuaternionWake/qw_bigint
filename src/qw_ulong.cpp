@@ -1,5 +1,7 @@
 #include "headers/qw_ulong.hpp"
+#include "headers/qw_long.hpp"
 
+#include <cstdio>
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -19,11 +21,26 @@ qw_ulong::qw_ulong(QW_BIGINT_DIGITTYPE value){
     digits.resize(1);
     digits[0] = value;
 }
+
+qw_ulong::qw_ulong(qw_long& value){
+    *this = value.getDigits();
+}
+
     //Asignment operators:
 
 qw_ulong& qw_ulong::operator=(const QW_BIGINT_DIGITTYPE value){
     digits.resize(1);
     digits[0] = value;
+    return *this;
+}
+
+qw_ulong& qw_ulong::operator=(const std::vector<QW_BIGINT_DIGITTYPE>& value){
+    digits = value;
+    return *this;
+}
+
+qw_ulong& qw_ulong::operator=(const qw_long& value){
+    *this = value.getDigits();
     return *this;
 }
 
@@ -114,7 +131,7 @@ const qw_ulong qw_ulong::operator++(int){
 
 const qw_ulong qw_ulong::operator--(int){
     qw_ulong copy = *this;
-    ++(*this);
+    --(*this);
     return copy;
 }
 
@@ -519,6 +536,28 @@ void qw_ulong::downsize(){
     if(i==0)
         i = 1;
     digits.resize(i);
+}
+
+static qw_ulong gcd(const qw_ulong& const_a, const qw_ulong& const_b){
+    if(const_a == 0 && const_b == 0)
+        return 0;
+    if(const_a == 0)
+        return const_b;
+    if(const_b == 0)
+        return const_a;
+    qw_ulong a = const_a;
+    qw_ulong b = const_b;
+    while(a!=0 && b!=0){
+        if(a > b)
+            a %= b;
+        else
+            b %= a;
+    }
+    return a==0 ? b : a;
+}
+
+static qw_ulong lcm(const qw_ulong& const_a, const qw_ulong& const_b){
+    return const_a*const_b / gcd(const_a,const_b);
 }
 
 void qw_ulong::divmod(const qw_ulong& lhs, const qw_ulong& rhs, qw_ulong& quotient, qw_ulong& remainder){
